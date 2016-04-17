@@ -1,0 +1,22 @@
+Pokemon Factory Pattern
+--------------------------------------------------------------------------------
+Premise:
+
+Create regions of the Pokemon game world through which the user can "walk" and
+encounter wild Pokemon. Pokemon are created by factories, and each region has
+its own factory. The user can battle and catch wild Pokemon.
+--------------------------------------------------------------------------------
+Classes: (the main classes that implement the factory pattern)
+
+    Pokemon
+    RegionFactory
+        [derivatives for each kind of region]
+    Region
+--------------------------------------------------------------------------------
+Features:
+
+    Wild Pokemon encounters
+    Battling
+    Catching
+    Save/load player party
+--------------------------------------------------------------------------------
