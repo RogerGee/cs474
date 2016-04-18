@@ -17,8 +17,8 @@ namespace pokfactory
         Pokemon(int species,std::istream& fin);
         int species;
         int experience;
-        int ivs[5];
-        int evs[5];
+        int ivs[6];
+        int evs[6];
         int moves[4];
         int pp[4];
         int curHp;
