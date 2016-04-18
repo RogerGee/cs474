@@ -1,13 +1,26 @@
 // pokemon.h
 #ifndef POKEMON_H
 #define POKEMON_H
+#include <iostream>
 #include <fstream>
 
 namespace pokfactory
 {
 
+    /* represents the base Pokemon info per species */
+    struct PokemonEntry
+    {
+        const char* name;
+        int hp;
+        int attack;
+        int defense;
+        int spcattack;
+        int spcdefense;
+        int speed;
+    };
+
     /*Represents an object created by the region factories*/
-    class Pokemon 
+    class Pokemon
     {
     public:
         void write(std::ostream& fout);

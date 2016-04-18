@@ -11,8 +11,9 @@ namespace pokfactory
     {
     public:
         Pokemon* create_pokemon();
+        virtual ~RegionFactory();
     protected:
-        RegionFactory(double encounterRate);
+        RegionFactory(double encounterRateIn);
         double flip_coin();
     private:
         virtual Pokemon* create_pokemon_impl() = 0;
@@ -20,36 +21,46 @@ namespace pokfactory
     };
 
     /*Factory for forest regions*/
-    class ForestRegionFactory : RegionFactory 
+    class ForestRegionFactory : public RegionFactory 
     {
+    public:
+        ForestRegionFactory();
     private:
         virtual Pokemon* create_pokemon_impl();
     };
 
     /*Factory for sea Factory for sea regions*/
-    class SeaRegionFactory : RegionFactory 
+    class SeaRegionFactory : public RegionFactory 
     {
+    public:
+        SeaRegionFactory();
     private:
         virtual Pokemon* create_pokemon_impl();
     };
 
     /*Region for grassland regions*/
-    class GrasslandRegionFactory : RegionFactory 
+    class GrasslandRegionFactory : public RegionFactory 
     {
+    public:
+        GrasslandRegionFactory();
     private:
         virtual Pokemon* create_pokemon_impl();
     };
 
     /*Factory for cave regions*/
-    class CaveRegionFactory : RegionFactory 
+    class CaveRegionFactory : public RegionFactory 
     {
+    public:
+        CaveRegionFactory();
     private:
         virtual Pokemon* create_pokemon_impl();
     };
 
     /*Factory for urban regions*/
-    class UrbanRegionFactory : RegionFactory 
+    class UrbanRegionFactory : public RegionFactory 
     {
+    public:
+        UrbanRegionFactory();
     private:
         virtual Pokemon* create_pokemon_impl();
     };
