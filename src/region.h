@@ -41,9 +41,6 @@ namespace pokfactory
 
     class Gameworld
     {
-#ifdef POKFACTORY_DEBUG
-        friend ostream& operator <<(ostream&,const Gameworld&);
-#endif
     public:
         typedef std::map<int,std::array<Region*,4> > adj_list_t;
 
@@ -60,10 +57,6 @@ namespace pokfactory
         Region* lk(int,int,int);
         bool update_adjacency(int i,int j,Region* r);
     };
-
-#ifdef POKFACTORY_DEBUG
-    ostream& operator <<(ostream&,const Gameworld&);
-#endif
 
 } // pokfactory
 
