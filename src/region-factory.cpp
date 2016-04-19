@@ -60,9 +60,6 @@ Pokemon* CaveRegionFactory::create_pokemon_impl()
     return NULL;
 }
 
-int UrbanRegionFactory::poks[] = {
-    5,6,7
-};
 UrbanRegionFactory::UrbanRegionFactory()
     : RegionFactory(0.25)
 {
