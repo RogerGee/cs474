@@ -21,7 +21,7 @@ Pokemon* RegionFactory::make_pokemon(int species,int exp)
 {
 	return new Pokemon(species, exp);
 }
-/*static*/int RegionFactory::choosePoke(int* pokes,int numPokes)
+/*static*/int RegionFactory::choosePoke(const int* pokes,int numPokes)
 {
     int x;    
     x = pokes[(rand() % numPokes)];
@@ -38,8 +38,8 @@ ForestRegionFactory::ForestRegionFactory()
 }
 Pokemon* ForestRegionFactory::create_pokemon_impl()
 {
-	return make_pokemon(1, 1);
-    return NULL;
+
+    return make_pokemon(choosePoke(pokes,numPokes),rand() % 2000+1);
 }
 
 const int SeaRegionFactory::numPokes = 30;
@@ -50,7 +50,7 @@ SeaRegionFactory::SeaRegionFactory()
 }
 Pokemon* SeaRegionFactory::create_pokemon_impl()
 {
-    return NULL;
+    return make_pokemon(choosePoke(pokes,numPokes),rand() % 2000+1);
 }
 
 const int GrasslandRegionFactory::pokes[] = {2, 7, 12, 17, 22, 27, 32, 37, 42, 47, 52, 57, 62, 67, 72, 77, 82, 87, 92, 97, 102, 107, 112, 117, 122, 127, 132, 137, 142, 147};
@@ -61,7 +61,8 @@ GrasslandRegionFactory::GrasslandRegionFactory()
 }
 Pokemon* GrasslandRegionFactory::create_pokemon_impl()
 {
-    return NULL;
+
+    return make_pokemon(choosePoke(pokes,numPokes),rand() % 2000+1);
 }
 
 const int CaveRegionFactory::numPokes = 30;
@@ -72,7 +73,8 @@ CaveRegionFactory::CaveRegionFactory()
 }
 Pokemon* CaveRegionFactory::create_pokemon_impl()
 {
-    return NULL;
+
+    return make_pokemon(choosePoke(pokes,numPokes),rand() % 2000+1);
 }
 
 const int UrbanRegionFactory::numPokes = 31;
@@ -83,7 +85,8 @@ UrbanRegionFactory::UrbanRegionFactory()
 }
 Pokemon* UrbanRegionFactory::create_pokemon_impl()
 {
-    return NULL;
+
+    return make_pokemon(choosePoke(pokes,numPokes),rand() % 2000+1);
 }
 
 PartyFactory::PartyFactory()

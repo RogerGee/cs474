@@ -15,7 +15,7 @@ namespace pokfactory
     protected:
         RegionFactory(double encounterRateIn);
 		Pokemon* make_pokemon(int species,int exp);
-        static int choosePoke(int* pokes,int numPokes);
+        static int choosePoke(const int* pokes,int numPokes);
     private:
         virtual Pokemon* create_pokemon_impl() = 0;
         double encounterRate;

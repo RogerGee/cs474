@@ -136,6 +136,7 @@ bool Pokemon::attacked(Pokemon& enemy,int move,ostream& output)
     if (curHP < 0) {
         int oldlevel;
         int exp = 300 * level / 7;
+        curHP = 0;
         output << us->name << " fainted! " << them->name << " gained " << exp << " experience points.\n";
         enemy.experience += exp;
         oldlevel = enemy.level;

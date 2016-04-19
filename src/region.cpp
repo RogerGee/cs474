@@ -237,8 +237,10 @@ void Gameworld::process_fighting(string input)
         if (enemy->attacked(*fighter,mno,cout) || fighter->attacked(*enemy,0,cout)) {
             cout << "The battle is over.\n";
             battle = false;
-            return;
+            delete enemy;
         }
+
+        return;
     }
 	std::cout << "I don't know what that means cuz me am no smrt.\n"
 		<< "Please try again.\n";
