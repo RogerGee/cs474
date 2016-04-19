@@ -289,7 +289,7 @@ void Gameworld::process_fighting(string input)
             battle = false;
             delete enemy;
         }
-		else if (fighter->attacked(*enemy,0,cout))
+		else if (fighter->attacked(*enemy,enemy->random_move(),cout))
 		{
 			cout << fighter->get_name() << " has fainted!\n";
 			bool alive = false;

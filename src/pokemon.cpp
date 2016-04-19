@@ -149,11 +149,11 @@ bool Pokemon::attacked(Pokemon& enemy,int move,ostream& output)
     us = POKEMON + species;
     them = POKEMON + enemy.species;
     damage = ((2*enemy.level + 10.0) / 250.0
-        * (enemy.stats[m->special ? SpcAttack : Attack] / stats[m->special ? SpcDefense : Defense])
+        * (double(enemy.stats[m->special ? SpcAttack : Attack]) / stats[m->special ? SpcDefense : Defense])
         * m->basePower + 2.0) * mod;
     output << them->name << " attacked using " << m->name << " for " << damage << " hit points!\n";
     curHP -= damage;
-    if (curHP < 0) {
+    if (curHP <= 0) {
         int oldlevel;
         int exp = 300 * level / 7;
         curHP = 0;
@@ -171,7 +171,7 @@ bool Pokemon::attacked(Pokemon& enemy,int move,ostream& output)
     }
     return false;
 }
-int Pokemon::select_move(string name)
+int Pokemon::select_move(string name) const
 {
     for (size_t i = 0;i < name.size();++i)
         name[i] = tolower(name[i]);
@@ -185,6 +185,13 @@ int Pokemon::select_move(string name)
         }
     }
     return -1;
+}
+int Pokemon::random_move() const
+{
+    int upper = 0;
+    while (moves[upper] != -1 && upper < 4)
+        ++upper;
+    return moves[rand() % upper];
 }
 void Pokemon::calc_stats()
 {
