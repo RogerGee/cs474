@@ -101,7 +101,7 @@ static const PokemonMove MOVES[] = {
 	{"Slash",70,false},
 	{"Thrash",120,false},
 	{"Swift",60,true},
-	{"Unproar",90,true},
+	{"Uproar",90,true},
 	{"Snore",50,true}
 };
 
