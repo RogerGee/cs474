@@ -16,10 +16,10 @@ int main(int argc,const char* argv[])
     b = new Region(2,"Soaked Sea",new SeaRegionFactory,sz);
     c = new Region(3,"Green Grassland",new GrasslandRegionFactory,sz);
     d = new Region(4,"Cruel Cavern",new CaveRegionFactory,sz);
-    e = new Region(5,"Cirridale City",new UrbanRegionFactory,sz);
+    e = new Region(5,"Cirridale City",new UrbanRegionFactory,sz,true);
     f = new Region(6,"Frozen Forest",new ForestRegionFactory,sz);
     g = new Region(7,"Ghastly Grassland",new GrasslandRegionFactory,sz);
-    h = new Region(8,"Template Town",new UrbanRegionFactory,sz);
+    h = new Region(8,"Template Town",new UrbanRegionFactory,sz,true);
     i = new Region(9,"Treacherous Tunnel",new CaveRegionFactory,sz);
     j = new Region(10,"Orca Ocean",new SeaRegionFactory,sz);
 	

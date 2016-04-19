@@ -46,7 +46,7 @@ debug: $(OBJDIR) $(PROGRAM)
 $(PROGRAM): $(OBJS)
 	$(LINK) -o$@ $(OBJS) $(LIBS)
 
-$(OBJDIR)/pokfactory.o: $(SRC)/pokfactory.cpp $(REGION_FACTORY_H)
+$(OBJDIR)/pokfactory.o: $(SRC)/pokfactory.cpp $(REGION)
 	$(COMPILE) -o$@ $<
 $(OBJDIR)/region.o: $(SRC)/region.cpp $(REGION_H)
 	$(COMPILE) -o$@ $<

@@ -26,17 +26,19 @@ namespace pokfactory
     };
 
     /*Represent a region in the Pokemon game world*/
-    class Region 
+    class Region
     {
     public:
         Region(int innumber,std::string n,
-			RegionFactory* infactory,const Size& inbounds);
+			RegionFactory* infactory,const Size& inbounds,bool p=false);
         ~Region();
 
         int get_number() const
         { return number; }
 		std::string get_name() const
 		{ return name; }
+		bool has_pc()
+		{ return pc; }
 		
 		Pokemon* encounter() {return factory->create_pokemon();}
     private:
@@ -44,6 +46,7 @@ namespace pokfactory
 		std::string name;
         RegionFactory* factory;
         Size bounds;
+		bool pc;
     };
 
     class Gameworld

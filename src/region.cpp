@@ -2,14 +2,16 @@
 #include "region.h"
 #include <stdexcept>
 #include <sstream>
+#include <thread>
+#include <chrono>
 using namespace std;
 using namespace pokfactory;
 
 // Region
 
 Region::Region(int innumber,std::string n,
-	RegionFactory* infactory,const Size& inbounds)
-    : number(innumber), name(n), factory(infactory), bounds(inbounds)
+	RegionFactory* infactory,const Size& inbounds,bool p)
+    : number(innumber), name(n), factory(infactory), bounds(inbounds), pc(p)
 {
 
 }
@@ -134,6 +136,8 @@ void Gameworld::process_idle(string input)
 		else
 		{
 			std::cout << "You are in " << curreg->get_name() << '\n';
+			if (curreg->has_pc())
+				std::cout << "There is a pokemon center here\n";
 			return;
 		}
 	}
@@ -175,7 +179,8 @@ void Gameworld::process_idle(string input)
 			return;
 		}
 	}
-    else if (input == "party") {
+    else if (input == "party")
+	{
         int index;
         ss >> index;
         index -= 1;
@@ -191,6 +196,22 @@ void Gameworld::process_idle(string input)
         }
         return;
     }
+	else if (input == "visit")
+	{
+		if (curreg->has_pc())
+		{
+			std::cout << "Let me take your pokemon for a moment...\n";
+			this_thread::sleep_for(chrono::seconds(2));
+			for (auto p : party)
+				p->heal();
+			std::cout << "All healed! Please come again soon!\n";
+		}
+		else
+		{
+			std::cout << "There is no pokemon center here.\n";
+		}
+		return;
+	}
 	std::cout << "I don't know what that means cuz me am no smrt.\n"
 		<< "Please try again.\n";
 }
@@ -219,4 +240,6 @@ void Gameworld::process_fighting(string input)
             return;
         }
     }
+	std::cout << "I don't know what that means cuz me am no smrt.\n"
+		<< "Please try again.\n";
 }
