@@ -95,7 +95,14 @@ static const char* STAT_LABELS[] = {
 };
 
 static const PokemonMove MOVES[] = {
-    {"Tackle",35,false}
+    {"Tackle",35,false},
+	{"Pound",40,false},
+	{"Cut",50,false},
+	{"Slash",70,false},
+	{"Thrash",120,false},
+	{"Swift",60,true},
+	{"Unproar",90,true},
+	{"Snore",50,true}
 };
 
 // Pokemon
@@ -108,8 +115,21 @@ Pokemon::Pokemon(int index,int exp)
         evs[i] = 0;
     }
 
-    moves[0] = 0;
-    moves[1] = moves[2] = moves[3] = -1;
+	//choose random moves
+    moves[0] = -1;
+    moves[1] = -1;
+	moves[2] = -1;
+	moves[3] = -1;
+	for (int i = 0; i < 4; i++)
+	{
+		int x = -1;
+		while (x == moves[0] || x == moves[1] || x == moves[2] || x == moves[3])
+			x = rand() % 8;
+		moves[i] = x;
+		if (rand()%2)
+			break;
+	}
+	
     pp[0] = 40;
     pp[1] = pp[2] = pp[3] = 0;
 

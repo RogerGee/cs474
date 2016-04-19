@@ -6,9 +6,9 @@ using namespace pokfactory;
 // RegionFactory
 Pokemon* RegionFactory::create_pokemon()
 {
-    // TODO: handle encounters
-
-    return create_pokemon_impl();
+    if (rand() % 100 < encounterRate * 100)
+		return create_pokemon_impl();
+	return NULL;
 }
 RegionFactory::RegionFactory(double encounterRateIn)
     : encounterRate(encounterRateIn)
@@ -38,8 +38,7 @@ ForestRegionFactory::ForestRegionFactory()
 }
 Pokemon* ForestRegionFactory::create_pokemon_impl()
 {
-
-    return make_pokemon(choosePoke(pokes,numPokes),rand() % 2000+1);
+    return make_pokemon(choosePoke(pokes,numPokes),rand() % 3000+1);
 }
 
 const int SeaRegionFactory::numPokes = 30;
@@ -50,7 +49,7 @@ SeaRegionFactory::SeaRegionFactory()
 }
 Pokemon* SeaRegionFactory::create_pokemon_impl()
 {
-    return make_pokemon(choosePoke(pokes,numPokes),rand() % 2000+1);
+    return make_pokemon(choosePoke(pokes,numPokes),rand() % 3000+1);
 }
 
 const int GrasslandRegionFactory::pokes[] = {2, 7, 12, 17, 22, 27, 32, 37, 42, 47, 52, 57, 62, 67, 72, 77, 82, 87, 92, 97, 102, 107, 112, 117, 122, 127, 132, 137, 142, 147};
@@ -61,8 +60,7 @@ GrasslandRegionFactory::GrasslandRegionFactory()
 }
 Pokemon* GrasslandRegionFactory::create_pokemon_impl()
 {
-
-    return make_pokemon(choosePoke(pokes,numPokes),rand() % 2000+1);
+    return make_pokemon(choosePoke(pokes,numPokes),rand() % 3000+1);
 }
 
 const int CaveRegionFactory::numPokes = 30;
@@ -73,8 +71,7 @@ CaveRegionFactory::CaveRegionFactory()
 }
 Pokemon* CaveRegionFactory::create_pokemon_impl()
 {
-
-    return make_pokemon(choosePoke(pokes,numPokes),rand() % 2000+1);
+    return make_pokemon(choosePoke(pokes,numPokes),rand() % 3000+1);
 }
 
 const int UrbanRegionFactory::numPokes = 31;
@@ -85,8 +82,7 @@ UrbanRegionFactory::UrbanRegionFactory()
 }
 Pokemon* UrbanRegionFactory::create_pokemon_impl()
 {
-
-    return make_pokemon(choosePoke(pokes,numPokes),rand() % 2000+1);
+    return make_pokemon(choosePoke(pokes,numPokes),rand() % 3000+1);
 }
 
 PartyFactory::PartyFactory()
@@ -95,5 +91,5 @@ PartyFactory::PartyFactory()
 }
 Pokemon* PartyFactory::create_pokemon_impl()
 {
-    return make_pokemon(rand() % 151 + 1,rand() % 2000 + 1);
+    return make_pokemon(rand() % 151 + 1,rand() % 3000 + 1);
 }

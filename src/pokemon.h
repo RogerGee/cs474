@@ -46,6 +46,8 @@ namespace pokfactory
         bool attacked(Pokemon& enemy,int move,std::ostream& output); // enemy uses move on us
         int select_move(std::string name);
 		void heal() {curHP = stats[HP];}
+		bool fainted() {return curHP == 0;}
+		int get_level() {return level;}
     private:
         Pokemon(int index,int exp);
         Pokemon(int index,std::istream& fin);

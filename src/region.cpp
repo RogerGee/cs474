@@ -7,9 +7,18 @@
 using namespace std;
 using namespace pokfactory;
 
+//helper
+string tolower(string input)
+{
+	string output = "";
+	for (size_t i = 0;i < input.size();++i)
+        output += tolower(input[i]);
+	return output;
+}
+
 // Region
 
-Region::Region(int innumber,std::string n,
+Region::Region(int innumber,string n,
 	RegionFactory* infactory,const Size& inbounds,bool p)
     : number(innumber), name(n), factory(infactory), bounds(inbounds), pc(p)
 {
@@ -70,10 +79,9 @@ void Gameworld::add_region(Region* region,Region* n,Region* s,Region* e,Region* 
             region,NULL);
     }
 }
-void Gameworld::process(std::string input)
+void Gameworld::process(string input)
 {
-    for (size_t i = 0;i < input.size();++i)
-        input[i] = tolower(input[i]);
+	input = tolower(input);
     if (battle)
         process_fighting(input);
     else
@@ -98,7 +106,7 @@ bool Gameworld::update_adjacency(int i,int j,Region* r)
 }
 void Gameworld::process_idle(string input)
 {
-	std::stringstream ss(input);
+	stringstream ss(input);
 	ss >> input;
 	if (input == "look")
 	{
@@ -126,32 +134,33 @@ void Gameworld::process_idle(string input)
 			if (d != none)
 			{
 				if (!adjlist[curreg->get_number()][d])
-					std::cout << "There is nothing to the " << input << '\n';
+					cout << "There is nothing to the " << input << '\n';
 				else
-					std::cout << "To the " << input << " is " << 
+					cout << "To the " << input << " is " << 
 						adjlist[curreg->get_number()][d]->get_name() << '\n';
 				return;
 			}
 		}
 		else
 		{
-			std::cout << "You are in " << curreg->get_name() << '\n';
+			cout << "You are in " << curreg->get_name() << '\n';
 			if (curreg->has_pc())
-				std::cout << "There is a pokemon center here\n";
+				cout << "There is a pokemon center here\n";
 			return;
 		}
 	}
 	else if (input == "walk")
 	{
-		std::cout << "You walk around aimlessly, ";
+		cout << "You walk around aimlessly, ";
 		Pokemon* p = curreg->encounter();
 		if (p) {
-			std::cout << "and encounter a wild " << p->get_name() << "!!!\n";
+			cout << "and encounter a wild " << p->get_name() << " (level "
+				<< p->get_level() << ")!!!\n";
             battle = true;
             enemy = p;
         }
 		else
-			std::cout << "but end up right back where you started...\n";
+			cout << "but end up right back where you started...\n";
 		return;
 	}
 	else if (input == "go")
@@ -169,11 +178,11 @@ void Gameworld::process_idle(string input)
 		if (d != none)
 		{
 			if (!adjlist[curreg->get_number()][d])
-				std::cout << "There is nothing to the " << input << '\n';
+				cout << "There is nothing to the " << input << '\n';
 			else
 			{
 				curreg = adjlist[curreg->get_number()][d];
-				std::cout << "You travel " << input << " to "
+				cout << "You travel " << input << " to "
 					<< curreg->get_name() << '\n';
 			}
 			return;
@@ -184,15 +193,17 @@ void Gameworld::process_idle(string input)
         int index;
         ss >> index;
         index -= 1;
-        if (!ss.fail()) {
+        if (!ss.fail())
+		{
             if (index >= 6 || index < 0)
                 cout << "bad party slot number, fool!\n";
             else
                 cout << *party[index] << endl;
         }
-        else {
+        else
+		{
             for (auto p : party)
-                cout << *p << endl;
+                cout << p->get_name() << " level " << p->get_level() << endl;
         }
         return;
     }
@@ -200,28 +211,66 @@ void Gameworld::process_idle(string input)
 	{
 		if (curreg->has_pc())
 		{
-			std::cout << "Let me take your pokemon for a moment...\n";
+			cout << "Let me take your pokemon for a moment...\n";
 			this_thread::sleep_for(chrono::seconds(2));
 			for (auto p : party)
 				p->heal();
-			std::cout << "All healed! Please come again soon!\n";
+			cout << "All healed! Please come again soon!\n";
 		}
 		else
 		{
-			std::cout << "There is no pokemon center here.\n";
+			cout << "There is no pokemon center here.\n";
 		}
 		return;
 	}
-	std::cout << "I don't know what that means cuz me am no smrt.\n"
+	else if (input == "switch")
+	{
+		ss >> input;
+		if (!ss.fail()) {
+			Pokemon** switchto = NULL;
+			for (auto& p : party)
+				if (tolower(p->get_name()) == input)
+					switchto = &p;
+			if (switchto)
+			{
+				if ((*switchto)->fainted())
+				{
+					cout << (*switchto)->get_name() << " is fainted\n";
+					return;
+				}
+				Pokemon* p = party[0];
+				party[0] = *switchto;
+				*switchto = p;
+				cout << "Switched to " << party[0]->get_name() << '\n';
+			}
+			else
+				cout << "No " << input << " in party\n";
+		}
+		else
+			cout << "Please specify a party member\n";
+		return;
+	}
+	cout << "I don't know what that means cuz me am no smrt.\n"
 		<< "Please try again.\n";
 }
 void Gameworld::process_fighting(string input)
 {
     Pokemon* fighter = party[0];
-	std::stringstream ss(input);
+	stringstream ss(input);
 	ss >> input;
-    if (input == "attack") {
-        string mv;
+	if (input == "look")
+	{
+		cout << *enemy << '\n';
+		return;
+	}
+    else if (input == "use")
+	{
+		if (fighter->fainted())
+		{
+			cout << fighter->get_name() << " has fainted, switch pokemon\n";
+			return;
+		}
+		string mv;
         ss >> mv;
         if (ss.fail()) {
             cout << "please specify a move\n";
@@ -234,14 +283,77 @@ void Gameworld::process_fighting(string input)
             return;
         }
 
-        if (enemy->attacked(*fighter,mno,cout) || fighter->attacked(*enemy,0,cout)) {
+        if (enemy->attacked(*fighter,mno,cout))
+		{
             cout << "The battle is over.\n";
             battle = false;
             delete enemy;
         }
-
+		else if (fighter->attacked(*enemy,0,cout))
+		{
+			cout << fighter->get_name() << " has fainted!\n";
+			bool alive = false;
+			for (auto p : party)
+				alive |= !p->fainted();
+			if (!alive)
+				cout << "You blacked out!\nPlease play again\n";
+		}
         return;
     }
-	std::cout << "I don't know what that means cuz me am no smrt.\n"
+	else if (input == "party")
+	{
+		int index;
+        ss >> index;
+        index -= 1;
+        if (!ss.fail())
+		{
+            if (index >= 6 || index < 0)
+                cout << "bad party slot number, fool!\n";
+            else
+                cout << *party[index] << endl;
+        }
+        else
+		{
+            for (auto p : party)
+                cout << p->get_name() << " level " << p->get_level() << endl;
+        }
+        return;
+	}
+	else if (input == "switch")
+	{
+		ss >> input;
+		if (!ss.fail()) {
+			Pokemon** switchto = NULL;
+			for (auto& p : party)
+				if (tolower(p->get_name()) == input)
+					switchto = &p;
+			if (switchto)
+			{
+				if ((*switchto)->fainted())
+				{
+					cout << (*switchto)->get_name() << " is fainted\n";
+					return;
+				}
+				party[0] = *switchto;
+				*switchto = fighter;
+				cout << "Switched to " << party[0]->get_name() << '\n';
+				if (party[0]->attacked(*enemy,0,cout))
+				{
+					cout << fighter->get_name() << " has fainted!\n";
+					bool alive = false;
+					for (auto p : party)
+						alive |= !p->fainted();
+					if (!alive)
+						cout << "You blacked out!\nPlease play again\n";
+				}
+			}
+			else
+				cout << "No " << input << " in party\n";
+		}
+		else
+			cout << "Please specify a party member\n";
+		return;
+	}
+	cout << "I don't know what that means cuz me am no smrt.\n"
 		<< "Please try again.\n";
 }
