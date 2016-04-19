@@ -15,6 +15,7 @@ namespace pokfactory
     protected:
         RegionFactory(double encounterRateIn);
 		Pokemon* make_pokemon(int species,int exp);
+        static int choosePoke(int* pokes,int numPokes);
     private:
         virtual Pokemon* create_pokemon_impl() = 0;
         double encounterRate;
@@ -27,6 +28,9 @@ namespace pokfactory
         ForestRegionFactory();
     private:
         virtual Pokemon* create_pokemon_impl();
+        static const int pokes[];
+        static const int numPokes;
+
     };
 
     /*Factory for sea Factory for sea regions*/
@@ -36,6 +40,8 @@ namespace pokfactory
         SeaRegionFactory();
     private:
         virtual Pokemon* create_pokemon_impl();
+        static const int pokes[];
+        static const int numPokes;
     };
 
     /*Region for grassland regions*/
@@ -45,6 +51,8 @@ namespace pokfactory
         GrasslandRegionFactory();
     private:
         virtual Pokemon* create_pokemon_impl();
+        static const int pokes[];
+        static const int numPokes;
     };
 
     /*Factory for cave regions*/
@@ -54,6 +62,8 @@ namespace pokfactory
         CaveRegionFactory();
     private:
         virtual Pokemon* create_pokemon_impl();
+        static const int pokes[];
+        static const int numPokes;
     };
 
     /*Factory for urban regions*/
@@ -63,6 +73,8 @@ namespace pokfactory
         UrbanRegionFactory();
     private:
         virtual Pokemon* create_pokemon_impl();
+        static const int pokes[];
+        static const int numPokes;
     };
 
     class PartyFactory : public RegionFactory

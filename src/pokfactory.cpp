@@ -1,5 +1,6 @@
 // pokfactory.cpp
 #include <iostream>
+#include <cstdlib>
 #include <ctime>
 #include "region.h"
 using namespace std;
