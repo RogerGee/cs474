@@ -63,9 +63,15 @@ namespace pokfactory
         Region* curreg;
         std::vector<Region*> regions;
         adj_list_t adjlist;
+        Pokemon* party[6];
+
+        bool battle;
+        Pokemon* enemy;
 
         Region* lk(int,int,int);
         bool update_adjacency(int i,int j,Region* r);
+        void process_idle(std::string input);
+        void process_fighting(std::string input);
     };
 
 } // pokfactory

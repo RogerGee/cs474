@@ -34,7 +34,7 @@ int main(int argc,const char* argv[])
 	while(true)
 	{
 		getline(cin, input);
-		if (input == "quit")
+		if (cin.eof() || input == "quit")
 			break;
 		world.process(input);
 	}

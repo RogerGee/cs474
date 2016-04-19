@@ -21,14 +21,20 @@ Region::~Region()
 // Gameworld
 
 Gameworld::Gameworld(Region* a)
-    : curreg(a)
+    : curreg(a), battle(false)
 {
+    PartyFactory factory;
 	add_region(a, NULL, NULL, NULL, NULL);
+    for (int i = 0;i < 6;++i) {
+        party[i] = factory.create_pokemon();
+    }
 }
 Gameworld::~Gameworld()
 {
     for (auto thing : regions)
         delete thing;
+    for (auto pok : party)
+        delete pok;
 }
 void Gameworld::add_region(Region* region,Region* n,Region* s,Region* e,Region* w)
 {
@@ -63,6 +69,32 @@ void Gameworld::add_region(Region* region,Region* n,Region* s,Region* e,Region* 
     }
 }
 void Gameworld::process(std::string input)
+{
+    for (size_t i = 0;i < input.size();++i)
+        input[i] = tolower(input[i]);
+    if (battle)
+        process_fighting(input);
+    else
+        process_idle(input);
+}
+Region* Gameworld::lk(int n,int d1,int d2)
+{
+    try {
+        Region* link = adjlist.at(n)[d1];
+        if (link != NULL)
+            return adjlist.at(link->get_number())[d2];
+    } catch (out_of_range e) {}
+    return NULL;
+}
+bool Gameworld::update_adjacency(int i,int j,Region* r)
+{
+    Region* other = adjlist[i][j];
+    if (other != NULL && other != r)
+        throw runtime_error("Gameworld: bad adjacencies");
+    adjlist[i][j] = r;
+    return other == NULL;
+}
+void Gameworld::process_idle(string input)
 {
 	std::stringstream ss(input);
 	ss >> input;
@@ -109,8 +141,11 @@ void Gameworld::process(std::string input)
 	{
 		std::cout << "You walk around aimlessly, ";
 		Pokemon* p = curreg->encounter();
-		if (p)
-			std::cout << "and encounter a wild " << *p << "!!!\n";
+		if (p) {
+			std::cout << "and encounter a wild " << p->get_name() << "!!!\n";
+            battle = true;
+            enemy = p;
+        }
 		else
 			std::cout << "but end up right back where you started...\n";
 		return;
@@ -140,23 +175,48 @@ void Gameworld::process(std::string input)
 			return;
 		}
 	}
+    else if (input == "party") {
+        int index;
+        ss >> index;
+        index -= 1;
+        if (!ss.fail()) {
+            if (index >= 6 || index < 0)
+                cout << "bad party slot number, fool!\n";
+            else
+                cout << *party[index] << endl;
+        }
+        else {
+            for (auto p : party)
+                cout << *p << endl;
+        }
+        return;
+    }
 	std::cout << "I don't know what that means cuz me am no smrt.\n"
 		<< "Please try again.\n";
 }
-Region* Gameworld::lk(int n,int d1,int d2)
+void Gameworld::process_fighting(string input)
 {
-    try {
-        Region* link = adjlist.at(n)[d1];
-        if (link != NULL)
-            return adjlist.at(link->get_number())[d2];
-    } catch (out_of_range e) {}
-    return NULL;
-}
-bool Gameworld::update_adjacency(int i,int j,Region* r)
-{
-    Region* other = adjlist[i][j];
-    if (other != NULL && other != r)
-        throw runtime_error("Gameworld: bad adjacencies");
-    adjlist[i][j] = r;
-    return other == NULL;
+    Pokemon* fighter = party[0];
+	std::stringstream ss(input);
+	ss >> input;
+    if (input == "attack") {
+        string mv;
+        ss >> mv;
+        if (ss.fail()) {
+            cout << "please specify a move\n";
+            return;
+        }
+
+        int mno = fighter->select_move(mv);
+        if (mno == -1) {
+            cout << "bad move!\n";
+            return;
+        }
+
+        if (enemy->attacked(*fighter,mno,cout) || fighter->attacked(*enemy,0,cout)) {
+            cout << "The battle is over.\n";
+            battle = false;
+            return;
+        }
+    }
 }

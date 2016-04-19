@@ -40,8 +40,10 @@ namespace pokfactory
         friend class RegionFactory;
         friend std::ostream& operator <<(std::ostream&,const Pokemon&);
     public:
+        const char* get_name() const;
+
         void write(std::ostream& fout);
-        void attack(Pokemon& enemy,int move,std::ostream& output); // enemy uses move on us
+        bool attacked(Pokemon& enemy,int move,std::ostream& output); // enemy uses move on us
         int select_move(std::string name);
     private:
         Pokemon(int index,int exp);

@@ -14,7 +14,6 @@ namespace pokfactory
         virtual ~RegionFactory();
     protected:
         RegionFactory(double encounterRateIn);
-        double flip_coin();
 		Pokemon* make_pokemon(int species,int exp);
     private:
         virtual Pokemon* create_pokemon_impl() = 0;
@@ -62,6 +61,14 @@ namespace pokfactory
     {
     public:
         UrbanRegionFactory();
+    private:
+        virtual Pokemon* create_pokemon_impl();
+    };
+
+    class PartyFactory : public RegionFactory
+    {
+    public:
+        PartyFactory();
     private:
         virtual Pokemon* create_pokemon_impl();
     };

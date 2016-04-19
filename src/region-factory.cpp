@@ -16,10 +16,6 @@ RegionFactory::RegionFactory(double encounterRateIn)
 RegionFactory::~RegionFactory()
 {
 }
-double RegionFactory::flip_coin()
-{
-    return 0.5;
-}
 Pokemon* RegionFactory::make_pokemon(int species,int exp)
 {
 	return new Pokemon(species, exp);
@@ -64,6 +60,9 @@ Pokemon* CaveRegionFactory::create_pokemon_impl()
     return NULL;
 }
 
+int UrbanRegionFactory::poks[] = {
+    5,6,7
+};
 UrbanRegionFactory::UrbanRegionFactory()
     : RegionFactory(0.25)
 {
@@ -71,4 +70,13 @@ UrbanRegionFactory::UrbanRegionFactory()
 Pokemon* UrbanRegionFactory::create_pokemon_impl()
 {
     return NULL;
+}
+
+PartyFactory::PartyFactory()
+    : RegionFactory(1.0)
+{
+}
+Pokemon* PartyFactory::create_pokemon_impl()
+{
+    return make_pokemon(rand() % 151 + 1,rand() % 2000 + 1);
 }
