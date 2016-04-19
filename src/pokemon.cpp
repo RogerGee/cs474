@@ -1,8 +1,12 @@
 // pokemon.cpp
 #include "pokemon.h"
+#include <cstdlib>
+#include <cmath>
+using namespace std;
 using namespace pokfactory;
 
-static const PokemonEntry[] = {
+static const PokemonEntry POKEMON[] = {
+    {"NOT A POKEMON!",0,0,0,0,0,0},
     {"Bulbasaur",45,49,49,65,65,45}, {"Ivysaur",60,62,63,80,80,60},
     {"Venusaur",80,82,83,100,100,80}, {"Charmander",39,52,43,60,50,65},
     {"Charmeleon",58,64,58,80,65,80}, {"Charizard",78,84,78,109,85,100},
@@ -80,3 +84,114 @@ static const PokemonEntry[] = {
     {"Dragonite",91,134,95,100,100,80}, {"Mewtwo",106,110,90,154,90,130},
     {"Mew",100,100,100,100,100,100}
 };
+
+static const char* STAT_LABELS[] = {
+    "HP",
+    "Attack",
+    "Defense",
+    "SpcAttack",
+    "SpcDefense",
+    "Speed"
+};
+
+static const PokemonMove MOVES[] = {
+    {"Tackle",35,false}
+};
+
+// Pokemon
+Pokemon::Pokemon(int index,int exp)
+    : species(index), experience(exp)
+{
+    // create new random ivs and default evs to 0
+    for (int i = 0;i < 6;++i) {
+        ivs[i] = rand() % 16;
+        evs[i] = 0;
+    }
+
+    moves[0] = 0;
+    moves[1] = moves[2] = moves[3] = -1;
+    pp[0] = 40;
+    pp[1] = pp[2] = pp[3] = 0;
+
+    calc_stats();
+    curHP = stats[HP];
+}
+void Pokemon::attack(Pokemon& enemy,int move,ostream& output)
+{
+    int damage;
+    double mod = (rand() % 16 + 85) / 100.0;
+    const PokemonEntry* us, *them;
+    const PokemonMove* m = MOVES + move;
+    us = POKEMON + species;
+    them = POKEMON + enemy.species;
+    damage = ((2*enemy.level + 10) / 250
+        * (enemy.stats[m->special ? SpcAttack : Attack] / stats[m->special ? SpcDefense : Defense])
+        * m->basePower + 2) * mod;
+    output << them->name << " attacked using " << m->name << " for " << damage << " hit points!\n";
+    curHP -= damage;
+    if (curHP < 0) {
+        int oldlevel;
+        int exp = 300 * level / 7;
+        output << us->name << " fainted! " << them->name << " gained " << exp << " experience points.\n";
+        enemy.experience += exp;
+        oldlevel = enemy.level;
+        enemy.calc_stats();
+        if (oldlevel < enemy.level) {
+            output << them->name << " grew to level " << enemy.level << "!\n";
+            for (int i = 0;i < 6;++i) {
+                enemy.evs[i] += ivs[i] % 3;
+            }
+        }
+    }
+}
+int Pokemon::select_move(string name)
+{
+    for (size_t i = 0;i < name.size();++i)
+        name[i] = tolower(name[i]);
+    for (int i = 0;i < 4;++i) {
+        if (moves[i] > -1) {
+            string a(MOVES[moves[i]].name);
+            for (size_t j = 0;j < name.size();++j)
+                a[j] = tolower(a[j]);
+            if (a == name)
+                return moves[i];
+        }
+    }
+    return -1;
+}
+void Pokemon::calc_stats()
+{
+    const PokemonEntry* entry = POKEMON + species;
+    level = pow(experience,0.33333333); // solve exp = level^3 for level
+    stats[HP] = floor(((entry->baseStats[HP] + ivs[HP]) * 2.0 + floor(ceil(sqrt(evs[HP]))/4.0)) * level / 100.0) + level + 10;
+
+    for (int stat = Attack;stat <= Speed;++stat)
+        stats[stat] = floor(((entry->baseStats[stat] + ivs[stat]) * 2.0
+                + floor(ceil(sqrt(evs[stat]))/4.0)) * level / 100.0) + 5;
+}
+
+ostream& pokfactory::operator <<(ostream& stream,const Pokemon& pok)
+{
+    const PokemonEntry* entry = POKEMON + pok.species;
+    stream << entry->name << " - No. " << pok.species
+           << " - Lv. " << pok.level;
+    stream << "\n    Hit Points: " << pok.curHP << '/' << pok.stats[HP];
+    stream << "\n    Exp. Points: " << pok.experience;
+    stream << "\n    " << "Moves:";
+    for (int i = 0;i < 4;++i) {
+        stream << "\n";
+        stream.width(18);
+        if (pok.moves[i] == -1)
+            stream << "--";
+        else
+            stream << MOVES[pok.moves[i]].name;
+    }
+    stream << "\n    Stats:";
+    for (int i = 0;i < 6;++i) {
+        stream << "\n";
+        stream.width(18);
+        stream << STAT_LABELS[i] << "    "
+               << pok.stats[i];
+    }
+    return stream;
+}

@@ -31,7 +31,7 @@ LINK = g++ -s
 endif
 
 # targets
-TARGETS = pokfactory region region-factory
+TARGETS = pokfactory region region-factory pokemon
 OBJS = $(addprefix $(OBJDIR)/,$(addsuffix .o,$(TARGETS)))
 
 # dependencies
@@ -51,6 +51,8 @@ $(OBJDIR)/pokfactory.o: $(SRC)/pokfactory.cpp $(REGION_FACTORY_H)
 $(OBJDIR)/region.o: $(SRC)/region.cpp $(REGION_H)
 	$(COMPILE) -o$@ $<
 $(OBJDIR)/region-factory.o: $(SRC)/region-factory.cpp $(REGION_FACTORY_H)
+	$(COMPILE) -o$@ $<
+$(OBJDIR)/pokemon.o: $(SRC)/pokemon.cpp $(POKEMON_H)
 	$(COMPILE) -o$@ $<
 
 $(OBJDIR):
