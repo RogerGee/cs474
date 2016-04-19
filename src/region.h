@@ -11,7 +11,8 @@ namespace pokfactory
 {
     enum dir
     {
-        north,
+        none = -1,
+		north,
         south,
         east,
         west
@@ -28,13 +29,19 @@ namespace pokfactory
     class Region 
     {
     public:
-        Region(int innumber,RegionFactory* infactory,const Size& inbounds);
+        Region(int innumber,std::string n,
+			RegionFactory* infactory,const Size& inbounds);
         ~Region();
 
         int get_number() const
         { return number; }
+		std::string get_name() const
+		{ return name; }
+		
+		Pokemon* encounter() {return factory->create_pokemon();}
     private:
         int number;
+		std::string name;
         RegionFactory* factory;
         Size bounds;
     };
@@ -44,13 +51,16 @@ namespace pokfactory
     public:
         typedef std::map<int,std::array<Region*,4> > adj_list_t;
 
-        Gameworld();
+        Gameworld(Region* a);
         ~Gameworld();
 
         void add_region(Region* region,Region* n = NULL,
             Region* s = NULL,Region* e = NULL,Region* w = NULL);
+		
+		void process(std::string input);
+		
     private:
-        int curreg;
+        Region* curreg;
         std::vector<Region*> regions;
         adj_list_t adjlist;
 

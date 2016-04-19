@@ -20,6 +20,10 @@ double RegionFactory::flip_coin()
 {
     return 0.5;
 }
+Pokemon* RegionFactory::make_pokemon(int species,int exp)
+{
+	return new Pokemon(species, exp);
+}
 
 // Factory subclasses
 
@@ -29,7 +33,7 @@ ForestRegionFactory::ForestRegionFactory()
 }
 Pokemon* ForestRegionFactory::create_pokemon_impl()
 {
-
+	return make_pokemon(1, 1);
     return NULL;
 }
 

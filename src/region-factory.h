@@ -15,6 +15,7 @@ namespace pokfactory
     protected:
         RegionFactory(double encounterRateIn);
         double flip_coin();
+		Pokemon* make_pokemon(int species,int exp);
     private:
         virtual Pokemon* create_pokemon_impl() = 0;
         double encounterRate;

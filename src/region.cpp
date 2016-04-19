@@ -1,13 +1,15 @@
 // region.cpp
 #include "region.h"
 #include <stdexcept>
+#include <sstream>
 using namespace std;
 using namespace pokfactory;
 
 // Region
 
-Region::Region(int innumber,RegionFactory* infactory,const Size& inbounds)
-    : number(innumber), factory(infactory), bounds(inbounds)
+Region::Region(int innumber,std::string n,
+	RegionFactory* infactory,const Size& inbounds)
+    : number(innumber), name(n), factory(infactory), bounds(inbounds)
 {
 
 }
@@ -18,10 +20,10 @@ Region::~Region()
 
 // Gameworld
 
-Gameworld::Gameworld()
-    : curreg(1)
+Gameworld::Gameworld(Region* a)
+    : curreg(a)
 {
-
+	add_region(a, NULL, NULL, NULL, NULL);
 }
 Gameworld::~Gameworld()
 {
@@ -59,6 +61,87 @@ void Gameworld::add_region(Region* region,Region* n,Region* s,Region* e,Region* 
             lk(num,south,west),
             region,NULL);
     }
+}
+void Gameworld::process(std::string input)
+{
+	std::stringstream ss(input);
+	ss >> input;
+	if (input == "look")
+	{
+		ss >> input;
+		if (!ss.fail())
+		{
+			if (input == "everywhere")
+			{
+				process("look");
+				process("look north");
+				process("look east");
+				process("look south");
+				process("look west");
+				return;
+			}
+			dir d = none;
+			if (input == "north")
+				d = north;
+			else if (input == "east")
+				d = east;
+			else if (input == "south")
+				d = south;
+			else if (input == "west")
+				d = west;
+			if (d != none)
+			{
+				if (!adjlist[curreg->get_number()][d])
+					std::cout << "There is nothing to the " << input << '\n';
+				else
+					std::cout << "To the " << input << " is " << 
+						adjlist[curreg->get_number()][d]->get_name() << '\n';
+				return;
+			}
+		}
+		else
+		{
+			std::cout << "You are in " << curreg->get_name() << '\n';
+			return;
+		}
+	}
+	else if (input == "walk")
+	{
+		std::cout << "You walk around aimlessly, ";
+		Pokemon* p = curreg->encounter();
+		if (p)
+			std::cout << "and encounter a wild " << *p << "!!!\n";
+		else
+			std::cout << "but end up right back where you started...\n";
+		return;
+	}
+	else if (input == "go")
+	{
+		ss >> input;
+		dir d = none;
+		if (input == "north")
+			d = north;
+		else if (input == "east")
+			d = east;
+		else if (input == "south")
+			d = south;
+		else if (input == "west")
+			d = west;
+		if (d != none)
+		{
+			if (!adjlist[curreg->get_number()][d])
+				std::cout << "There is nothing to the " << input << '\n';
+			else
+			{
+				curreg = adjlist[curreg->get_number()][d];
+				std::cout << "You travel " << input << " to "
+					<< curreg->get_name() << '\n';
+			}
+			return;
+		}
+	}
+	std::cout << "I don't know what that means cuz me am no smrt.\n"
+		<< "Please try again.\n";
 }
 Region* Gameworld::lk(int n,int d1,int d2)
 {
